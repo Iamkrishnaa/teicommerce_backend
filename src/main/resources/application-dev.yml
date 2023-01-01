@@ -2,8 +2,13 @@ server:
   port: 8080
   error:
     include-message: always
+    whitelabel:
+      enabled: false
 
 spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+
   datasource:
     url: jdbc:mysql://localhost:3306/teicommerce
     username: root
@@ -17,8 +22,12 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  web:
+    resources:
+      add-mappings: false
+
 jwt:
   secret: jwtSecret
   # time in hours
-  expiration: 0.5
-  refreshExpiration: 4320
+  expiration: 20
+  refreshExpiration: 259200

@@ -1,5 +1,6 @@
 package com.teispace.teicommerce_backend.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.teispace.teicommerce_backend.models.Address;
 import com.teispace.teicommerce_backend.models.Order;
 import com.teispace.teicommerce_backend.models.Rating;
@@ -23,7 +24,10 @@ public class UserDto implements Serializable {
     private Long id;
     private String fullName;
     private String email;
+
+    private String phoneNumber;
     private String userName;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Timestamp createdAt;
     private Timestamp updatedAt;

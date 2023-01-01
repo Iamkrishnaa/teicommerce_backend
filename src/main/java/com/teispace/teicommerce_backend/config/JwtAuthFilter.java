@@ -1,22 +1,26 @@
 package com.teispace.teicommerce_backend.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teispace.teicommerce_backend.dtos.exceptions.ExceptionResponse;
 import com.teispace.teicommerce_backend.serviceImplementations.UserServiceImplementation;
 import com.teispace.teicommerce_backend.utils.JwtUtils;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -47,10 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-
             String token = getJwtFromRequest(request);
-
-
             if (token != null) {
                 String userName;
                 userName = jwtUtils.extractUsername(token);
@@ -75,13 +76,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     }
                 }
             }
-        } catch (ExpiredJwtException ex) {
-            System.out.println("Jwt expired");
-        } catch (JwtException ex) {
-            System.out.println("JWT Error");
-        } catch (Exception ex) {
-            System.out.println("Error during filter");
+            filterChain.doFilter(request, response);
+        } catch (UsernameNotFoundException ex) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(
+                    new Date(),
+                    HttpStatus.UNAUTHORIZED,
+                    List.of(ex.getMessage()),
+                    ex.getMessage(),
+                    request.getRequestURI()
+            );
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            ObjectMapper objectMapper = new ObjectMapper();
+            
+            response.getOutputStream().println(
+                    objectMapper.writeValueAsString(exceptionResponse)
+            );
         }
-        filterChain.doFilter(request, response);
     }
 }
