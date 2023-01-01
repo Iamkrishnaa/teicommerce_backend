@@ -16,23 +16,20 @@ import java.util.Set;
 @Builder
 @Table(name = "users")
 public class User {
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "id")
     private Long id;
-
     @Column(nullable = false)
     private String fullName;
-
     @Column(nullable = false)
     private String email;
-
     @Column(nullable = false)
     private String userName;
-
     @Column(nullable = false)
     private String password;
-
     @CreationTimestamp
     private Timestamp createdAt;
 
