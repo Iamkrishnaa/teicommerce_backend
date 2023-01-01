@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -101,6 +102,26 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST,
                         details,
                         "Missing Parameters",
+                        request.getServletPath()
+                );
+
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(
+            AccessDeniedException ex,
+            HttpServletRequest request) {
+
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ExceptionResponse response =
+                new ExceptionResponse(
+                        new Date(),
+                        HttpStatus.BAD_REQUEST,
+                        details,
+                        "You don't have permission to access this resource",
                         request.getServletPath()
                 );
 
