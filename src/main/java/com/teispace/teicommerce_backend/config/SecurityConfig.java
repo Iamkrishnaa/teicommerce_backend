@@ -3,7 +3,6 @@ package com.teispace.teicommerce_backend.config;
 import com.teispace.teicommerce_backend.serviceImplementations.UserServiceImplementation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -54,7 +53,7 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
+                .requestMatchers(AUTH_WHITELIST).permitAll()
                 .requestMatchers(ADMIN_ROUTES).hasAuthority("ADMIN")
                 .anyRequest().authenticated();
 
