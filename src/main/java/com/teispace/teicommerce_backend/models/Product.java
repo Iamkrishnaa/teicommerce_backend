@@ -47,4 +47,11 @@ public class Product {
     )
     private Set<Rating> ratings;
 
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "product",
+            fetch = FetchType.LAZY
+    )
+    
+    private Set<ProductImage> productImages;
 }
