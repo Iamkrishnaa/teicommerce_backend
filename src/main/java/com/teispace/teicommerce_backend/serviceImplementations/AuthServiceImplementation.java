@@ -9,6 +9,7 @@ import com.teispace.teicommerce_backend.dtos.register.RegisterResponse;
 import com.teispace.teicommerce_backend.exceptions.InvalidJwtException;
 import com.teispace.teicommerce_backend.exceptions.ResourceAlreadyExistsException;
 import com.teispace.teicommerce_backend.models.User;
+import com.teispace.teicommerce_backend.repos.RoleRepo;
 import com.teispace.teicommerce_backend.repos.UserRepo;
 import com.teispace.teicommerce_backend.services.AuthService;
 import com.teispace.teicommerce_backend.utils.JwtUtils;
@@ -22,6 +23,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class AuthServiceImplementation implements AuthService {
     private final AuthenticationManager authenticationManager;
@@ -32,6 +35,7 @@ public class AuthServiceImplementation implements AuthService {
     private final ModelMapper modelMapper;
 
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepo roleRepo;
 
     public AuthServiceImplementation(
             AuthenticationManager authenticationManager,
@@ -39,7 +43,8 @@ public class AuthServiceImplementation implements AuthService {
             UserRepo userRepo,
             JwtUtils jwtUtils,
             ModelMapper modelMapper,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            RoleRepo roleRepo
     ) {
         this.authenticationManager = authenticationManager;
         this.userServiceImplementation = userServiceImplementation;
@@ -47,6 +52,7 @@ public class AuthServiceImplementation implements AuthService {
         this.jwtUtils = jwtUtils;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepo = roleRepo;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class AuthServiceImplementation implements AuthService {
                             .loadUserByUsername(
                                     jwtUtils.extractUsername(jwtRefreshToken)
                             );
-            
+
             boolean isRefreshTokenValid = jwtUtils.validateToken(jwtRefreshToken, userDetails);
 
             if (isRefreshTokenValid) {
@@ -119,6 +125,8 @@ public class AuthServiceImplementation implements AuthService {
         user.setUserName(registerRequest.getUserName());
         user.setFullName(registerRequest.getFullName());
         user.setPhoneNumber(registerRequest.getPhoneNumber());
+
+        roleRepo.findRoleByName("USER").ifPresent(role -> user.setRoles(Set.of(role)));
 
         if (registerRequest.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));

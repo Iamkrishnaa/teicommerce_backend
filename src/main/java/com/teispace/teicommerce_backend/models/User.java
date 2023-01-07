@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @Table(name = "users")
 public class User {
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Role> roles;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
