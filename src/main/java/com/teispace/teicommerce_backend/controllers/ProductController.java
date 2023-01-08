@@ -49,4 +49,15 @@ public class ProductController {
 
         return ResponseEntity.ok(products);
     }
+
+    @GetMapping("/trending")
+    public ResponseEntity<PaginationResponseDto> getTrendingProducts(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
+    ) {
+        PaginationResponseDto products = productServiceImplementation.getTrendingProduct(pageNumber, pageSize, sortBy);
+
+        return ResponseEntity.ok(products);
+    }
 }

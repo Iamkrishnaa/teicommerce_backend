@@ -23,6 +23,9 @@ public class Category {
     private Long id;
     @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false, unique = true)
+    private String slug;
     private String description;
     private String image;
 
@@ -32,7 +35,7 @@ public class Category {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    
+
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "category",

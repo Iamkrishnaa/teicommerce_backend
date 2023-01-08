@@ -66,7 +66,9 @@ public class ProductServiceImplementation implements ProductService {
             int pageSize,
             String sortBy
     ) {
-        return null;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Page<Product> productPage = productRepository.findTrendingProducts(pageable);
+        return getPaginationResponseDto(productPage);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class ProductServiceImplementation implements ProductService {
             String category
     ) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        Category cat = categoryRepository.findCategoryByTitle(category).orElse(null);
+        Category cat = categoryRepository.findCategoryByTitleOrSlug(category, category).orElse(null);
         Page<Product> productPage = productRepository.findAllByCategory(cat, pageable);
         return getPaginationResponseDto(productPage);
     }

@@ -14,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CategoryDto implements Serializable {
     private String title;
+    private String slug;
     private String description;
     private String image;
 }
