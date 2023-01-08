@@ -20,10 +20,10 @@ public class ProductDto implements Serializable {
     private String title;
     private String description;
     private double price;
-    private String image;
     private int quantity;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private Set<RatingDto> ratings;
+    private double ratingValue;
+    private int totalRatings;
     private Set<ProductImage> productImages;
 }

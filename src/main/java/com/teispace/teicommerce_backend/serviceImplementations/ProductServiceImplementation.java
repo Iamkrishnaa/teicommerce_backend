@@ -47,6 +47,11 @@ public class ProductServiceImplementation implements ProductService {
         Page<Product> productPage = productRepository.findAll(pageable);
         List<Product> products = productPage.getContent();
 
+        for (Product product : products) {
+            product.setRatingValue();
+            product.setTotalRatings();
+        }
+
         List<ProductDto> productDtos = products.stream()
                 .map(product -> modelMapper.map(product, ProductDto.class))
                 .toList();

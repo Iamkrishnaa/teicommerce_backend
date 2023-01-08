@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 public class ProductImageDto implements Serializable {
     private Long id;
     private String image;
-    private ProductDto product;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }
