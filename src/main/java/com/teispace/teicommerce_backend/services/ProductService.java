@@ -1,12 +1,9 @@
 package com.teispace.teicommerce_backend.services;
 
 import com.teispace.teicommerce_backend.dtos.PaginationResponseDto;
-import com.teispace.teicommerce_backend.dtos.ProductDto;
-
-import java.util.List;
 
 public interface ProductService {
-    List<ProductDto> getAvailableProducts(
+    PaginationResponseDto getAvailableProducts(
             int pageNumber,
             int pageSize,
             String sortBy
@@ -18,13 +15,13 @@ public interface ProductService {
             String sortBy
     );
 
-    List<ProductDto> getTrendingProduct(
+    PaginationResponseDto getTrendingProduct(
             int pageNumber,
             int pageSize,
             String sortBy
     );
 
-    List<ProductDto> getProductByCategory(
+    PaginationResponseDto getProductByCategory(
             int pageNumber,
             int pageSize,
             String sortBy,

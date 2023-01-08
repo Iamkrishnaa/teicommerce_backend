@@ -2,8 +2,11 @@ package com.teispace.teicommerce_backend.serviceImplementations;
 
 import com.teispace.teicommerce_backend.dtos.PaginationResponseDto;
 import com.teispace.teicommerce_backend.dtos.ProductDto;
+import com.teispace.teicommerce_backend.models.Category;
 import com.teispace.teicommerce_backend.models.Product;
+import com.teispace.teicommerce_backend.repos.CategoryRepository;
 import com.teispace.teicommerce_backend.repos.ProductRepository;
+import com.teispace.teicommerce_backend.repos.RatingRepository;
 import com.teispace.teicommerce_backend.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -19,23 +22,31 @@ public class ProductServiceImplementation implements ProductService {
 
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final RatingRepository ratingRepository;
+
+    private final CategoryRepository categoryRepository;
 
     public ProductServiceImplementation(
             ProductRepository productRepository,
-            ModelMapper modelMapper) {
+            ModelMapper modelMapper, RatingRepository ratingRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.ratingRepository = ratingRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
     @Override
-    public List<ProductDto> getAvailableProducts(
+    public PaginationResponseDto getAvailableProducts(
             int pageNumber,
             int pageSize,
             String sortBy
     ) {
-        return null;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Page<Product> productPage = productRepository.findAllByQuantityGreaterThan(0, pageable);
+        return getPaginationResponseDto(productPage);
     }
+
 
     @Override
     public PaginationResponseDto getProducts(
@@ -45,10 +56,42 @@ public class ProductServiceImplementation implements ProductService {
     ) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         Page<Product> productPage = productRepository.findAll(pageable);
+        return getPaginationResponseDto(productPage);
+    }
+
+
+    @Override
+    public PaginationResponseDto getTrendingProduct(
+            int pageNumber,
+            int pageSize,
+            String sortBy
+    ) {
+        return null;
+    }
+
+    @Override
+    public PaginationResponseDto getProductByCategory(
+            int pageNumber,
+            int pageSize,
+            String sortBy,
+            String category
+    ) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Category cat = categoryRepository.findCategoryByTitle(category).orElse(null);
+        Page<Product> productPage = productRepository.findAllByCategory(cat, pageable);
+        return getPaginationResponseDto(productPage);
+    }
+
+
+    private PaginationResponseDto getPaginationResponseDto(Page<Product> productPage) {
         List<Product> products = productPage.getContent();
 
         List<ProductDto> productDtos = products.stream()
-                .map(product -> modelMapper.map(product, ProductDto.class))
+                .map(product -> {
+                    product.setTotalRatings(product.getRatings().size());
+                    product.setAverageRating(ratingRepository.findAverageRatingByProductId(product.getId()));
+                    return modelMapper.map(product, ProductDto.class);
+                })
                 .toList();
 
         PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -62,23 +105,4 @@ public class ProductServiceImplementation implements ProductService {
         return paginationResponseDto;
     }
 
-
-    @Override
-    public List<ProductDto> getTrendingProduct(
-            int pageNumber,
-            int pageSize,
-            String sortBy
-    ) {
-        return null;
-    }
-
-    @Override
-    public List<ProductDto> getProductByCategory(
-            int pageNumber,
-            int pageSize,
-            String sortBy,
-            String category
-    ) {
-        return null;
-    }
 }

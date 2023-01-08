@@ -1,5 +1,7 @@
 package com.teispace.teicommerce_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,6 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Table(name = "products")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Product {
 
     @Id
@@ -53,5 +56,11 @@ public class Product {
     )
 
     private Set<ProductImage> productImages;
+
+    @Transient
+    private double averageRating;
+
+    @Transient
+    private int totalRatings;
 
 }

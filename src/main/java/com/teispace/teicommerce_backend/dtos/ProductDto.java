@@ -1,6 +1,5 @@
 package com.teispace.teicommerce_backend.dtos;
 
-import com.teispace.teicommerce_backend.models.ProductImage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,12 @@ public class ProductDto implements Serializable {
     private String description;
     private double price;
     private int quantity;
+    private CategoryDto category;
+    private double averageRating;
+    private int totalRatings;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private Set<ProductImage> productImages;
+    private Set<ProductImageDto> productImages;
+
+
 }
