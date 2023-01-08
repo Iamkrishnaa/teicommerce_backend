@@ -163,6 +163,23 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ExceptionResponse response =
+                new ExceptionResponse(
+                        new Date(),
+                        HttpStatus.BAD_REQUEST,
+                        details,
+                        details.get(0),
+                        request.getServletPath()
+                );
+
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> handleBadCredentialsException(BadCredentialsException ex, HttpServletRequest request) {
 

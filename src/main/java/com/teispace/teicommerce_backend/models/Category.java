@@ -32,6 +32,7 @@ public class Category {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "category",
