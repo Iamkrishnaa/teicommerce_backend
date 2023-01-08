@@ -23,7 +23,5 @@ public class ProductDto implements Serializable {
     private int quantity;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private double ratingValue;
-    private int totalRatings;
     private Set<ProductImage> productImages;
 }

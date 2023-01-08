@@ -54,30 +54,4 @@ public class Product {
 
     private Set<ProductImage> productImages;
 
-    @Transient
-    private double ratingValue;
-
-    @Transient
-    private int totalRatings;
-
-    //get rating value and total ratings
-    public double getRatingValue() {
-        return ratingValue;
-    }
-
-    //set rating value and total ratings
-    public void setRatingValue() {
-        for (Rating rating : ratings) {
-            this.ratingValue += rating.getRating();
-        }
-        this.ratingValue = this.ratingValue / ratings.size();
-    }
-
-    public int getTotalRatings() {
-        return totalRatings;
-    }
-
-    public void setTotalRatings() {
-        this.totalRatings = ratings.size();
-    }
 }
