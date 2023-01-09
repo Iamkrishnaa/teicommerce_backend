@@ -2,6 +2,7 @@ package com.teispace.teicommerce_backend.serviceImplementations;
 
 import com.teispace.teicommerce_backend.dtos.PaginationResponseDto;
 import com.teispace.teicommerce_backend.dtos.ProductDto;
+import com.teispace.teicommerce_backend.exceptions.ResourceNotAvailableException;
 import com.teispace.teicommerce_backend.models.Category;
 import com.teispace.teicommerce_backend.models.Product;
 import com.teispace.teicommerce_backend.repos.CategoryRepository;
@@ -59,6 +60,16 @@ public class ProductServiceImplementation implements ProductService {
         return getPaginationResponseDto(productPage);
     }
 
+    @Override
+    public ProductDto getProductById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotAvailableException("Product not available")
+        );
+        product.setTotalRatings(ratingRepository.findTotalRatingByProductId(product.getId()));
+        product.setAverageRating(ratingRepository.findAverageRatingByProductId(product.getId()));
+        return modelMapper.map(product, ProductDto.class);
+    }
+
 
     @Override
     public PaginationResponseDto getTrendingProduct(
@@ -90,7 +101,7 @@ public class ProductServiceImplementation implements ProductService {
 
         List<ProductDto> productDtos = products.stream()
                 .map(product -> {
-                    product.setTotalRatings(product.getRatings().size());
+                    product.setTotalRatings(ratingRepository.findTotalRatingByProductId(product.getId()));
                     product.setAverageRating(ratingRepository.findAverageRatingByProductId(product.getId()));
                     return modelMapper.map(product, ProductDto.class);
                 })

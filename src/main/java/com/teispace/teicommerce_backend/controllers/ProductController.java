@@ -1,6 +1,7 @@
 package com.teispace.teicommerce_backend.controllers;
 
 import com.teispace.teicommerce_backend.dtos.PaginationResponseDto;
+import com.teispace.teicommerce_backend.dtos.ProductDto;
 import com.teispace.teicommerce_backend.serviceImplementations.ProductServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,15 @@ public class ProductController {
             @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
     ) {
         PaginationResponseDto products = productServiceImplementation.getProducts(pageNumber, pageSize, sortBy);
+
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProductById(
+            @PathVariable Long id
+    ) {
+        ProductDto products = productServiceImplementation.getProductById(id);
 
         return ResponseEntity.ok(products);
     }

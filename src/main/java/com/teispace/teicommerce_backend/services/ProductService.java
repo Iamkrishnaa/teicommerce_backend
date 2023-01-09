@@ -1,6 +1,7 @@
 package com.teispace.teicommerce_backend.services;
 
 import com.teispace.teicommerce_backend.dtos.PaginationResponseDto;
+import com.teispace.teicommerce_backend.dtos.ProductDto;
 
 public interface ProductService {
     PaginationResponseDto getAvailableProducts(
@@ -14,6 +15,8 @@ public interface ProductService {
             int pageSize,
             String sortBy
     );
+
+    ProductDto getProductById(Long id);
 
     PaginationResponseDto getTrendingProduct(
             int pageNumber,

@@ -88,6 +88,25 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
+    @ExceptionHandler(ResourceNotAvailableException.class)
+    public ResponseEntity<Object> handleResourceNotAvailableException(
+            ResourceNotAvailableException ex,
+            HttpServletRequest request) {
+
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ExceptionResponse response = new ExceptionResponse(
+                new Date(),
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                details,
+                ex.getMessage(),
+                request.getServletPath()
+        );
+
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException ex,
