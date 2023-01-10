@@ -65,8 +65,10 @@ public class ProductServiceImplementation implements ProductService {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotAvailableException("Product not available")
         );
-        product.setTotalRatings(ratingRepository.findTotalRatingByProductId(product.getId()));
-        product.setAverageRating(ratingRepository.findAverageRatingByProductId(product.getId()));
+        Integer totalRatings = ratingRepository.findTotalRatingByProductId(product.getId());
+        Double avgRating = ratingRepository.findAverageRatingByProductId(product.getId());
+        product.setTotalRatings(totalRatings != null ? totalRatings : 0);
+        product.setAverageRating(avgRating != null ? avgRating : 0.0);
         return modelMapper.map(product, ProductDto.class);
     }
 
@@ -101,8 +103,10 @@ public class ProductServiceImplementation implements ProductService {
 
         List<ProductDto> productDtos = products.stream()
                 .map(product -> {
-                    product.setTotalRatings(ratingRepository.findTotalRatingByProductId(product.getId()));
-                    product.setAverageRating(ratingRepository.findAverageRatingByProductId(product.getId()));
+                    Integer totalRatings = ratingRepository.findTotalRatingByProductId(product.getId());
+                    Double avgRating = ratingRepository.findAverageRatingByProductId(product.getId());
+                    product.setTotalRatings(totalRatings != null ? totalRatings : 0);
+                    product.setAverageRating(avgRating != null ? avgRating : 0.0);
                     return modelMapper.map(product, ProductDto.class);
                 })
                 .toList();
