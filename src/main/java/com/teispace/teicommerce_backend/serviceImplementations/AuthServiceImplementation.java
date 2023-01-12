@@ -90,7 +90,7 @@ public class AuthServiceImplementation implements AuthService {
                 String email = jwtUtils.extractUsername(jwtRefreshToken);
                 UserDetails details = userServiceImplementation.loadUserByUsername(email);
 
-                String refreshedAccessToken = jwtUtils.generateToken(details);
+                String refreshedAccessToken = jwtUtils.generateRefreshToken(details);
 
                 return new LoginResponse(refreshedAccessToken, jwtRefreshToken);
 
